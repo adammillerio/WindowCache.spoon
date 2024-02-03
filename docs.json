@@ -12,12 +12,12 @@
     "Variable" : [
       {
         "doc" : "Logger object used within the Spoon. Can be accessed to set the default log\nlevel for the messages coming from the Spoon.",
-        "desc" : "Logger object used within the Spoon. Can be accessed to set the default log",
         "stripped_doc" : [
           "Logger object used within the Spoon. Can be accessed to set the default log",
           "level for the messages coming from the Spoon."
         ],
-        "name" : "logger",
+        "def" : "WindowCache.logger",
+        "desc" : "Logger object used within the Spoon. Can be accessed to set the default log",
         "notes" : [
 
         ],
@@ -26,20 +26,20 @@
         "returns" : [
 
         ],
-        "def" : "WindowCache.logger",
+        "name" : "logger",
         "parameters" : [
 
         ]
       },
       {
         "doc" : "Main hs.window.filter. This is what is used to enumerate and maintain the window\ncache. It is a copy of the \"default\" window filter with WindowCache specific\nsort order and callback configurations applied in the start method.",
-        "desc" : "Main hs.window.filter. This is what is used to enumerate and maintain the window",
         "stripped_doc" : [
           "Main hs.window.filter. This is what is used to enumerate and maintain the window",
           "cache. It is a copy of the \"default\" window filter with WindowCache specific",
           "sort order and callback configurations applied in the start method."
         ],
-        "name" : "windowFilter",
+        "def" : "WindowCache.windowFilter",
+        "desc" : "Main hs.window.filter. This is what is used to enumerate and maintain the window",
         "notes" : [
 
         ],
@@ -48,19 +48,19 @@
         "returns" : [
 
         ],
-        "def" : "WindowCache.windowFilter",
+        "name" : "windowFilter",
         "parameters" : [
 
         ]
       },
       {
         "doc" : "Table containing the window cache, ordered by the time it was added to the\ncache.",
-        "desc" : "Table containing the window cache, ordered by the time it was added to the",
         "stripped_doc" : [
           "Table containing the window cache, ordered by the time it was added to the",
           "cache."
         ],
-        "name" : "currentWindows",
+        "def" : "WindowCache.currentWindows",
+        "desc" : "Table containing the window cache, ordered by the time it was added to the",
         "notes" : [
 
         ],
@@ -69,7 +69,7 @@
         "returns" : [
 
         ],
-        "def" : "WindowCache.currentWindows",
+        "name" : "currentWindows",
         "parameters" : [
 
         ]
@@ -78,24 +78,30 @@
     "stripped_doc" : [
 
     ],
-    "desc" : "Utility for quickly retrieving windows",
     "Deprecated" : [
 
     ],
     "type" : "Module",
+    "desc" : "Utility for quickly retrieving windows",
     "Constructor" : [
 
     ],
-    "doc" : "Utility for quickly retrieving windows\n\nDownload: [https:\/\/github.com\/adammillerio\/WindowCache.spoon\/archive\/refs\/heads\/main.zip](https:\/\/github.com\/adammillerio\/WindowCache.spoon\/archive\/refs\/heads\/main.zip)\n\nExample Usage (Using [SpoonInstall](https:\/\/zzamboni.org\/post\/using-spoons-in-hammerspoon\/)):\nspoon.SpoonInstall:andUse(\n  \"WindowCache\",\n  {\n    start = true\n  }\n)",
+    "doc" : "Utility for quickly retrieving windows\n\nDownload: https:\/\/github.com\/adammillerio\/Spoons\/raw\/main\/Spoons\/WindowCache.spoon.zip\n\nExample Usage (Using [SpoonInstall](https:\/\/zzamboni.org\/post\/using-spoons-in-hammerspoon\/)):\nspoon.SpoonInstall:andUse(\n  \"WindowCache\",\n  {\n    start = true\n  }\n)",
+    "Method" : [
+
+    ],
+    "Command" : [
+
+    ],
     "items" : [
       {
         "doc" : "Table containing the window cache, ordered by the time it was added to the\ncache.",
-        "desc" : "Table containing the window cache, ordered by the time it was added to the",
         "stripped_doc" : [
           "Table containing the window cache, ordered by the time it was added to the",
           "cache."
         ],
-        "name" : "currentWindows",
+        "def" : "WindowCache.currentWindows",
+        "desc" : "Table containing the window cache, ordered by the time it was added to the",
         "notes" : [
 
         ],
@@ -104,19 +110,19 @@
         "returns" : [
 
         ],
-        "def" : "WindowCache.currentWindows",
+        "name" : "currentWindows",
         "parameters" : [
 
         ]
       },
       {
         "doc" : "Logger object used within the Spoon. Can be accessed to set the default log\nlevel for the messages coming from the Spoon.",
-        "desc" : "Logger object used within the Spoon. Can be accessed to set the default log",
         "stripped_doc" : [
           "Logger object used within the Spoon. Can be accessed to set the default log",
           "level for the messages coming from the Spoon."
         ],
-        "name" : "logger",
+        "def" : "WindowCache.logger",
+        "desc" : "Logger object used within the Spoon. Can be accessed to set the default log",
         "notes" : [
 
         ],
@@ -125,20 +131,20 @@
         "returns" : [
 
         ],
-        "def" : "WindowCache.logger",
+        "name" : "logger",
         "parameters" : [
 
         ]
       },
       {
         "doc" : "Main hs.window.filter. This is what is used to enumerate and maintain the window\ncache. It is a copy of the \"default\" window filter with WindowCache specific\nsort order and callback configurations applied in the start method.",
-        "desc" : "Main hs.window.filter. This is what is used to enumerate and maintain the window",
         "stripped_doc" : [
           "Main hs.window.filter. This is what is used to enumerate and maintain the window",
           "cache. It is a copy of the \"default\" window filter with WindowCache specific",
           "sort order and callback configurations applied in the start method."
         ],
-        "name" : "windowFilter",
+        "def" : "WindowCache.windowFilter",
+        "desc" : "Main hs.window.filter. This is what is used to enumerate and maintain the window",
         "notes" : [
 
         ],
@@ -147,19 +153,13 @@
         "returns" : [
 
         ],
-        "def" : "WindowCache.windowFilter",
+        "name" : "windowFilter",
         "parameters" : [
 
         ]
       }
     ],
-    "Command" : [
-
-    ],
     "Field" : [
-
-    ],
-    "Method" : [
 
     ],
     "name" : "WindowCache"
