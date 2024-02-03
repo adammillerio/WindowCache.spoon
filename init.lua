@@ -2,7 +2,7 @@
 ---
 --- Utility for quickly retrieving windows
 ---
---- Download: [https://github.com/adammillerio/WindowCache.spoon/archive/refs/heads/main.zip](https://github.com/adammillerio/WindowCache.spoon/archive/refs/heads/main.zip)
+--- Download: https://github.com/adammillerio/Spoons/raw/main/Spoons/WindowCache.spoon.zip
 --- 
 --- Example Usage (Using [SpoonInstall](https://zzamboni.org/post/using-spoons-in-hammerspoon/)):
 --- spoon.SpoonInstall:andUse(
@@ -87,14 +87,14 @@ function WindowCache:focusWindowByApp(appName)
 end
 
 function WindowCache:_callbackWindowCreated(window, appName, event)
-    self.logger:vf("Caching created window %s", window)
+    self.logger.vf("Caching created window %s", window)
     table.insert(self.currentWindows, 1, window)
 end
 
 function WindowCache:_callbackWindowDestroyed(window, appName, event)
     for i, currentWindow in ipairs(self.currentWindows) do
         if currentWindow == window then
-            self.logger:vf("Removing destroyed window: %s", window)
+            self.logger.vf("Removing destroyed window: %s", window)
             table.remove(self.currentWindows, i)
 
             return
@@ -103,11 +103,11 @@ function WindowCache:_callbackWindowDestroyed(window, appName, event)
 
     -- No cached window, this can happen if it is being cached for the first time
     -- on the destroy call, so it's verbose and not a warning.
-    self.logger:vf("Could not find destroyed window in cache: %s", window)
+    self.logger.vf("Could not find destroyed window in cache: %s", window)
 end
 
 function WindowCache:_callbackWindowFocused(window, appName, event)
-    self.logger:vf("Window focused: %s", window)
+    self.logger.vf("Window focused: %s", window)
     self:_callbackWindowDestroyed(window, appName, "windowDestroyed")
     self:_callbackWindowCreated(window, appName, "windowCreated")
 end
@@ -121,10 +121,24 @@ function WindowCache:_subscribe(event, callback)
     table.insert(self.subscribedFunctions, partialFunction)
 end
 
+-- Utility function to load all windows into the cache on initial load.
+function WindowCache:_initialize()
+    for i, window in ipairs(self.windowFilter:getWindows()) do
+        self:_callbackWindowCreated(window, window:application():name(),
+                                    "windowCreated")
+    end
+end
+
 function WindowCache:start()
-    self.logger:v("Starting window filter")
-    self.windowFilter:setDefaultFilter()
+    self.logger.v("Starting window filter")
+
+    -- The {} instead of () is important here, this specifically includes windows
+    -- in all spaces and not just the current space.
+    self.windowFilter:setDefaultFilter{}
     self.windowFilter:setSortOrder(hs.window.filter.sortByFocusedLast)
+
+    -- Initialize window cache.
+    self:_initialize()
 
     self:_subscribe(hs.window.filter.windowCreated, self._callbackWindowCreated)
     self:_subscribe(hs.window.filter.windowDestroyed,
@@ -133,7 +147,7 @@ function WindowCache:start()
 end
 
 function WindowCache:stop()
-    self.logger:v("Stopping window filter")
+    self.logger.v("Stopping window filter")
     self.windowFilter:unsubscribe(nil, self.subscribedFunctions)
 end
 
