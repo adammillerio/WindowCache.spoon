@@ -3,26 +3,55 @@
 --- Utility for quickly retrieving windows
 ---
 --- Download: [https://github.com/adammillerio/WindowCache.spoon/archive/refs/heads/main.zip](https://github.com/adammillerio/WindowCache.spoon/archive/refs/heads/main.zip)
-local obj = {}
-obj.__index = obj
+--- 
+--- Example Usage (Using [SpoonInstall](https://zzamboni.org/post/using-spoons-in-hammerspoon/)):
+--- spoon.SpoonInstall:andUse(
+---   "WindowCache",
+---   {
+---     start = true
+---   }
+--- )
+local WindowCache = {}
 
--- WindowCache.logger
--- Variable
---- Logger object used within the Spoon. Can be accessed to set the default log level for the messages coming from the Spoon.
-obj.logger = nil
+WindowCache.__index = WindowCache
 
-obj.windowFilter = nil
+-- Metadata
+WindowCache.name = "WindowCache"
+WindowCache.version = "0.1"
+WindowCache.author = "Adam Miller <adam@adammiller.io>"
+WindowCache.homepage = "https://github.com/adammillerio/WindowCache.spoon"
+WindowCache.license = "MIT - https://opensource.org/licenses/MIT"
 
-obj.currentWindows = nil
+--- WindowCache.logger
+--- Variable
+--- Logger object used within the Spoon. Can be accessed to set the default log
+--- level for the messages coming from the Spoon.
+WindowCache.logger = nil
 
-function obj:init()
-    obj.logger = hs.logger.new('WindowCache')
-    obj.windowFilter = hs.window.filter.new(false)
-    obj.currentWindows = {}
+--- WindowCache.windowFilter
+--- Variable
+--- Main hs.window.filter. This is what is used to enumerate and maintain the window
+--- cache. It is a copy of the "default" window filter with WindowCache specific
+--- sort order and callback configurations applied in the start method.
+WindowCache.windowFilter = nil
+
+--- WindowCache.currentWindows
+--- Variable
+--- Table containing the window cache, ordered by the time it was added to the
+--- cache.
+WindowCache.currentWindows = nil
+
+WindowCache.subscribedFunctions = nil
+
+function WindowCache:init()
+    self.logger = hs.logger.new("WindowCache")
+    self.windowFilter = hs.window.filter.new(false)
+    self.currentWindows = {}
+    self.subscribedFunctions = {}
 end
 
-function obj:findWindowByTitle(title)
-    for i, currentWindow in ipairs(obj.currentWindows) do
+function WindowCache:findWindowByTitle(title)
+    for i, currentWindow in ipairs(self.currentWindows) do
         if string.find(currentWindow:title(), title) then
             return currentWindow
         end
@@ -31,16 +60,16 @@ function obj:findWindowByTitle(title)
     return nil
 end
 
-function obj:focusWindowByTitle(title)
-    window = obj:findWindowByTitle(title)
+function WindowCache:focusWindowByTitle(title)
+    window = self:findWindowByTitle(title)
 
     if window then window:focus() end
 
     return window
 end
 
-function obj:findWindowByApp(appName)
-    for i, currentWindow in ipairs(obj.currentWindows) do
+function WindowCache:findWindowByApp(appName)
+    for i, currentWindow in ipairs(self.currentWindows) do
         if string.find(currentWindow:application():name(), appName) then
             return currentWindow
         end
@@ -49,24 +78,24 @@ function obj:findWindowByApp(appName)
     return nil
 end
 
-function obj:focusWindowByApp(appName)
-    window = obj:findWindowByApp(appName)
+function WindowCache:focusWindowByApp(appName)
+    window = self:findWindowByApp(appName)
 
     if window then window.focus() end
 
     return window
 end
 
-local function callbackWindowCreated(window, appName, event)
-    obj.logger.vf("Caching created window %s", window)
-    table.insert(obj.currentWindows, 1, window)
+function WindowCache:_callbackWindowCreated(window, appName, event)
+    self.logger:vf("Caching created window %s", window)
+    table.insert(self.currentWindows, 1, window)
 end
 
-local function callbackWindowDestroyed(window, appName, event)
-    for i, currentWindow in ipairs(obj.currentWindows) do
+function WindowCache:_callbackWindowDestroyed(window, appName, event)
+    for i, currentWindow in ipairs(self.currentWindows) do
         if currentWindow == window then
-            obj.logger.vf("Removing destroyed window: %s", window)
-            table.remove(obj.currentWindows, i)
+            self.logger:vf("Removing destroyed window: %s", window)
+            table.remove(self.currentWindows, i)
 
             return
         end
@@ -74,36 +103,38 @@ local function callbackWindowDestroyed(window, appName, event)
 
     -- No cached window, this can happen if it is being cached for the first time
     -- on the destroy call, so it's verbose and not a warning.
-    obj.logger.vf("Could not find destroyed window in cache: %s", window)
+    self.logger:vf("Could not find destroyed window in cache: %s", window)
 end
 
-local function callbackWindowFocused(window, appName, event)
-    obj.logger.vf("Window focused: %s", window)
-    callbackWindowDestroyed(window, appName, "windowDestroyed")
-    callbackWindowCreated(window, appName, "windowCreated")
+function WindowCache:_callbackWindowFocused(window, appName, event)
+    self.logger:vf("Window focused: %s", window)
+    self:_callbackWindowDestroyed(window, appName, "windowDestroyed")
+    self:_callbackWindowCreated(window, appName, "windowCreated")
 end
 
-function obj:start()
-    obj.logger.v('Starting window filter')
-    obj.windowFilter:setDefaultFilter()
-    obj.windowFilter:setSortOrder(hs.window.filter.sortByFocusedLast)
-
-    obj.windowFilter:subscribe(hs.window.filter.windowCreated,
-                               callbackWindowCreated)
-    obj.windowFilter:subscribe(hs.window.filter.windowDestroyed,
-                               callbackWindowDestroyed)
-    obj.windowFilter:subscribe(hs.window.filter.windowFocused,
-                               callbackWindowFocused)
-
-    obj.windowFilter:subscribe(hs.window.filter.windowUnhidden,
-                               callbackWindowCreated)
+-- Utility function to allow for subscribing to callbacks at the instance level.
+-- Creates a partial function with the callback call, including the instance, and
+-- inserts it in a table to be unsubscribed later.
+function WindowCache:_subscribe(event, callback)
+    partialFunction = hs.fnutils.partial(callback, self)
+    self.windowFilter:subscribe(event, partialFunction)
+    table.insert(self.subscribedFunctions, partialFunction)
 end
 
-function obj:stop()
-    obj.logger.v('Stopping window filter')
-    obj.windowFilter:unsubscribe(nil, {
-        callbackWindowCreated, callbackWindowDestroyed, callbackWindowFocused
-    })
+function WindowCache:start()
+    self.logger:v("Starting window filter")
+    self.windowFilter:setDefaultFilter()
+    self.windowFilter:setSortOrder(hs.window.filter.sortByFocusedLast)
+
+    self:_subscribe(hs.window.filter.windowCreated, self._callbackWindowCreated)
+    self:_subscribe(hs.window.filter.windowDestroyed,
+                    self._callbackWindowDestroyed)
+    self:_subscribe(hs.window.filter.windowFocused, self._callbackWindowFocused)
 end
 
-return obj
+function WindowCache:stop()
+    self.logger:v("Stopping window filter")
+    self.windowFilter:unsubscribe(nil, self.subscribedFunctions)
+end
+
+return WindowCache
