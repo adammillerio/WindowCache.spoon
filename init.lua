@@ -63,6 +63,12 @@ WindowCache.subscribedFunctions = nil
 --- WindowCache:init()
 --- Method
 --- Spoon initializer method for WindowCache.
+---
+--- Parameters:
+---  * None
+---
+--- Returns:
+---  * None
 function WindowCache:init()
     self.currentWindows = {}
     self.subscribedFunctions = {}
@@ -192,6 +198,12 @@ end
 --- Spoon start method for WindowCache. Configures the window filter, initializes
 --- the cache with all existing windows, and then subscribes to all window related
 --- events to be cached.
+---
+--- Parameters:
+---  * None
+---
+--- Returns:
+---  * None
 function WindowCache:start()
     -- Start logger, this has to be done in start because it relies on config.
     self.logger = hs.logger.new("WindowCache")
@@ -222,6 +234,12 @@ end
 --- Method
 --- Spoon stop method for WindowCache. Unsubscribes the window filter from all
 --- subscribed functions.
+---
+--- Parameters:
+---  * None
+---
+--- Returns:
+---  * None
 function WindowCache:stop()
     self.logger.v("Stopping WindowCache")
 

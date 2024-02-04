@@ -11,15 +11,13 @@
     ],
     "Variable" : [
       {
-        "def" : "WindowCache.logger",
+        "doc" : "Logger object used within the Spoon. Can be accessed to set the default log\nlevel for the messages coming from the Spoon.",
         "stripped_doc" : [
           "Logger object used within the Spoon. Can be accessed to set the default log",
           "level for the messages coming from the Spoon."
         ],
-        "doc" : "Logger object used within the Spoon. Can be accessed to set the default log\nlevel for the messages coming from the Spoon.",
-        "parameters" : [
-
-        ],
+        "name" : "logger",
+        "def" : "WindowCache.logger",
         "notes" : [
 
         ],
@@ -28,18 +26,18 @@
         "returns" : [
 
         ],
-        "name" : "logger",
-        "desc" : "Logger object used within the Spoon. Can be accessed to set the default log"
+        "desc" : "Logger object used within the Spoon. Can be accessed to set the default log",
+        "parameters" : [
+
+        ]
       },
       {
-        "def" : "WindowCache.logLevel",
+        "doc" : "WindowCache specific log level override, see hs.logger.setLogLevel for options.",
         "stripped_doc" : [
           "WindowCache specific log level override, see hs.logger.setLogLevel for options."
         ],
-        "doc" : "WindowCache specific log level override, see hs.logger.setLogLevel for options.",
-        "parameters" : [
-
-        ],
+        "name" : "logLevel",
+        "def" : "WindowCache.logLevel",
         "notes" : [
 
         ],
@@ -48,20 +46,20 @@
         "returns" : [
 
         ],
-        "name" : "logLevel",
-        "desc" : "WindowCache specific log level override, see hs.logger.setLogLevel for options."
+        "desc" : "WindowCache specific log level override, see hs.logger.setLogLevel for options.",
+        "parameters" : [
+
+        ]
       },
       {
-        "def" : "WindowCache.windowFilter",
+        "doc" : "Main hs.window.filter. This is what is used to enumerate and maintain the window\ncache. It is a copy of the \"default\" window filter with WindowCache specific\nsort order and callback configurations applied in the start method.",
         "stripped_doc" : [
           "Main hs.window.filter. This is what is used to enumerate and maintain the window",
           "cache. It is a copy of the \"default\" window filter with WindowCache specific",
           "sort order and callback configurations applied in the start method."
         ],
-        "doc" : "Main hs.window.filter. This is what is used to enumerate and maintain the window\ncache. It is a copy of the \"default\" window filter with WindowCache specific\nsort order and callback configurations applied in the start method.",
-        "parameters" : [
-
-        ],
+        "name" : "windowFilter",
+        "def" : "WindowCache.windowFilter",
         "notes" : [
 
         ],
@@ -70,19 +68,19 @@
         "returns" : [
 
         ],
-        "name" : "windowFilter",
-        "desc" : "Main hs.window.filter. This is what is used to enumerate and maintain the window"
+        "desc" : "Main hs.window.filter. This is what is used to enumerate and maintain the window",
+        "parameters" : [
+
+        ]
       },
       {
-        "def" : "WindowCache.currentWindows",
+        "doc" : "Table containing the window cache, ordered by the time it was added to the\ncache.",
         "stripped_doc" : [
           "Table containing the window cache, ordered by the time it was added to the",
           "cache."
         ],
-        "doc" : "Table containing the window cache, ordered by the time it was added to the\ncache.",
-        "parameters" : [
-
-        ],
+        "name" : "currentWindows",
+        "def" : "WindowCache.currentWindows",
         "notes" : [
 
         ],
@@ -91,19 +89,19 @@
         "returns" : [
 
         ],
-        "name" : "currentWindows",
-        "desc" : "Table containing the window cache, ordered by the time it was added to the"
+        "desc" : "Table containing the window cache, ordered by the time it was added to the",
+        "parameters" : [
+
+        ]
       },
       {
-        "def" : "WindowCache.subscribedFunctions",
+        "doc" : "Table containing all subscribed instance callbacks for the window filter, used\nduring shutdown.",
         "stripped_doc" : [
           "Table containing all subscribed instance callbacks for the window filter, used",
           "during shutdown."
         ],
-        "doc" : "Table containing all subscribed instance callbacks for the window filter, used\nduring shutdown.",
-        "parameters" : [
-
-        ],
+        "name" : "subscribedFunctions",
+        "def" : "WindowCache.subscribedFunctions",
         "notes" : [
 
         ],
@@ -112,18 +110,20 @@
         "returns" : [
 
         ],
-        "name" : "subscribedFunctions",
-        "desc" : "Table containing all subscribed instance callbacks for the window filter, used"
+        "desc" : "Table containing all subscribed instance callbacks for the window filter, used",
+        "parameters" : [
+
+        ]
       }
     ],
     "stripped_doc" : [
 
     ],
+    "desc" : "Utility for quickly retrieving windows",
     "Deprecated" : [
 
     ],
     "type" : "Module",
-    "desc" : "Utility for quickly retrieving windows",
     "Constructor" : [
 
     ],
@@ -132,36 +132,35 @@
     ],
     "Method" : [
       {
-        "def" : "WindowCache:init()",
+        "doc" : "Spoon initializer method for WindowCache.\n\nParameters:\n * None\n\nReturns:\n * None",
         "stripped_doc" : [
-          "Spoon initializer method for WindowCache."
+          "Spoon initializer method for WindowCache.",
+          ""
         ],
-        "doc" : "Spoon initializer method for WindowCache.",
-        "parameters" : [
-
-        ],
+        "name" : "init",
+        "def" : "WindowCache:init()",
         "notes" : [
 
         ],
         "signature" : "WindowCache:init()",
         "type" : "Method",
         "returns" : [
-
+          " * None"
         ],
-        "name" : "init",
-        "desc" : "Spoon initializer method for WindowCache."
+        "desc" : "Spoon initializer method for WindowCache.",
+        "parameters" : [
+          " * None",
+          ""
+        ]
       },
       {
-        "def" : "WindowCache:findWindowByTitle(title)",
+        "doc" : "Find a window by title.\n\nParameters:\n * title - title of the window to find\n\nReturns:\n * The `hs.window` object if found, `nil` otherwise",
         "stripped_doc" : [
           "Find a window by title.",
           ""
         ],
-        "doc" : "Find a window by title.\n\nParameters:\n * title - title of the window to find\n\nReturns:\n * The `hs.window` object if found, `nil` otherwise",
-        "parameters" : [
-          " * title - title of the window to find",
-          ""
-        ],
+        "name" : "findWindowByTitle",
+        "def" : "WindowCache:findWindowByTitle(title)",
         "notes" : [
 
         ],
@@ -170,20 +169,20 @@
         "returns" : [
           " * The `hs.window` object if found, `nil` otherwise"
         ],
-        "name" : "findWindowByTitle",
-        "desc" : "Find a window by title."
+        "desc" : "Find a window by title.",
+        "parameters" : [
+          " * title - title of the window to find",
+          ""
+        ]
       },
       {
-        "def" : "WindowCache:focusWindowByTitle(title)",
+        "doc" : "Find a window by title and focus it.\n\nParameters:\n * title - title of the window to focus\n\nReturns:\n * The `hs.window` object focused if found, `nil` otherwise",
         "stripped_doc" : [
           "Find a window by title and focus it.",
           ""
         ],
-        "doc" : "Find a window by title and focus it.\n\nParameters:\n * title - title of the window to focus\n\nReturns:\n * The `hs.window` object focused if found, `nil` otherwise",
-        "parameters" : [
-          " * title - title of the window to focus",
-          ""
-        ],
+        "name" : "focusWindowByTitle",
+        "def" : "WindowCache:focusWindowByTitle(title)",
         "notes" : [
 
         ],
@@ -192,20 +191,20 @@
         "returns" : [
           " * The `hs.window` object focused if found, `nil` otherwise"
         ],
-        "name" : "focusWindowByTitle",
-        "desc" : "Find a window by title and focus it."
+        "desc" : "Find a window by title and focus it.",
+        "parameters" : [
+          " * title - title of the window to focus",
+          ""
+        ]
       },
       {
-        "def" : "WindowCache:findWindowByApp(appName)",
+        "doc" : "Find the last opened window by application name.\n\nParameters:\n * appName - name of the application to find\n\nReturns:\n * The `hs.window` object if found, `nil` otherwise",
         "stripped_doc" : [
           "Find the last opened window by application name.",
           ""
         ],
-        "doc" : "Find the last opened window by application name.\n\nParameters:\n * appName - name of the application to find\n\nReturns:\n * The `hs.window` object if found, `nil` otherwise",
-        "parameters" : [
-          " * appName - name of the application to find",
-          ""
-        ],
+        "name" : "findWindowByApp",
+        "def" : "WindowCache:findWindowByApp(appName)",
         "notes" : [
 
         ],
@@ -214,20 +213,20 @@
         "returns" : [
           " * The `hs.window` object if found, `nil` otherwise"
         ],
-        "name" : "findWindowByApp",
-        "desc" : "Find the last opened window by application name."
+        "desc" : "Find the last opened window by application name.",
+        "parameters" : [
+          " * appName - name of the application to find",
+          ""
+        ]
       },
       {
-        "def" : "WindowCache:focusWindowByApp(appName)",
+        "doc" : "Find the last opened window by application name and focus it.\n\nParameters:\n * appName - name of the application to find\n\nReturns:\n * The `hs.window` object focused if found, `nil` otherwise",
         "stripped_doc" : [
           "Find the last opened window by application name and focus it.",
           ""
         ],
-        "doc" : "Find the last opened window by application name and focus it.\n\nParameters:\n * appName - name of the application to find\n\nReturns:\n * The `hs.window` object focused if found, `nil` otherwise",
-        "parameters" : [
-          " * appName - name of the application to find",
-          ""
-        ],
+        "name" : "focusWindowByApp",
+        "def" : "WindowCache:focusWindowByApp(appName)",
         "notes" : [
 
         ],
@@ -236,51 +235,58 @@
         "returns" : [
           " * The `hs.window` object focused if found, `nil` otherwise"
         ],
-        "name" : "focusWindowByApp",
-        "desc" : "Find the last opened window by application name and focus it."
+        "desc" : "Find the last opened window by application name and focus it.",
+        "parameters" : [
+          " * appName - name of the application to find",
+          ""
+        ]
       },
       {
-        "def" : "WindowCache:start()",
+        "doc" : "Spoon start method for WindowCache. Configures the window filter, initializes\nthe cache with all existing windows, and then subscribes to all window related\nevents to be cached.\n\nParameters:\n * None\n\nReturns:\n * None",
         "stripped_doc" : [
           "Spoon start method for WindowCache. Configures the window filter, initializes",
           "the cache with all existing windows, and then subscribes to all window related",
-          "events to be cached."
+          "events to be cached.",
+          ""
         ],
-        "doc" : "Spoon start method for WindowCache. Configures the window filter, initializes\nthe cache with all existing windows, and then subscribes to all window related\nevents to be cached.",
-        "parameters" : [
-
-        ],
+        "name" : "start",
+        "def" : "WindowCache:start()",
         "notes" : [
 
         ],
         "signature" : "WindowCache:start()",
         "type" : "Method",
         "returns" : [
-
+          " * None"
         ],
-        "name" : "start",
-        "desc" : "Spoon start method for WindowCache. Configures the window filter, initializes"
+        "desc" : "Spoon start method for WindowCache. Configures the window filter, initializes",
+        "parameters" : [
+          " * None",
+          ""
+        ]
       },
       {
-        "def" : "WindowCache:stop()",
+        "doc" : "Spoon stop method for WindowCache. Unsubscribes the window filter from all\nsubscribed functions.\n\nParameters:\n * None\n\nReturns:\n * None",
         "stripped_doc" : [
           "Spoon stop method for WindowCache. Unsubscribes the window filter from all",
-          "subscribed functions."
+          "subscribed functions.",
+          ""
         ],
-        "doc" : "Spoon stop method for WindowCache. Unsubscribes the window filter from all\nsubscribed functions.",
-        "parameters" : [
-
-        ],
+        "name" : "stop",
+        "def" : "WindowCache:stop()",
         "notes" : [
 
         ],
         "signature" : "WindowCache:stop()",
         "type" : "Method",
         "returns" : [
-
+          " * None"
         ],
-        "name" : "stop",
-        "desc" : "Spoon stop method for WindowCache. Unsubscribes the window filter from all"
+        "desc" : "Spoon stop method for WindowCache. Unsubscribes the window filter from all",
+        "parameters" : [
+          " * None",
+          ""
+        ]
       }
     ],
     "Command" : [
@@ -288,15 +294,13 @@
     ],
     "items" : [
       {
-        "def" : "WindowCache.currentWindows",
+        "doc" : "Table containing the window cache, ordered by the time it was added to the\ncache.",
         "stripped_doc" : [
           "Table containing the window cache, ordered by the time it was added to the",
           "cache."
         ],
-        "doc" : "Table containing the window cache, ordered by the time it was added to the\ncache.",
-        "parameters" : [
-
-        ],
+        "name" : "currentWindows",
+        "def" : "WindowCache.currentWindows",
         "notes" : [
 
         ],
@@ -305,18 +309,18 @@
         "returns" : [
 
         ],
-        "name" : "currentWindows",
-        "desc" : "Table containing the window cache, ordered by the time it was added to the"
+        "desc" : "Table containing the window cache, ordered by the time it was added to the",
+        "parameters" : [
+
+        ]
       },
       {
-        "def" : "WindowCache.logLevel",
+        "doc" : "WindowCache specific log level override, see hs.logger.setLogLevel for options.",
         "stripped_doc" : [
           "WindowCache specific log level override, see hs.logger.setLogLevel for options."
         ],
-        "doc" : "WindowCache specific log level override, see hs.logger.setLogLevel for options.",
-        "parameters" : [
-
-        ],
+        "name" : "logLevel",
+        "def" : "WindowCache.logLevel",
         "notes" : [
 
         ],
@@ -325,19 +329,19 @@
         "returns" : [
 
         ],
-        "name" : "logLevel",
-        "desc" : "WindowCache specific log level override, see hs.logger.setLogLevel for options."
+        "desc" : "WindowCache specific log level override, see hs.logger.setLogLevel for options.",
+        "parameters" : [
+
+        ]
       },
       {
-        "def" : "WindowCache.logger",
+        "doc" : "Logger object used within the Spoon. Can be accessed to set the default log\nlevel for the messages coming from the Spoon.",
         "stripped_doc" : [
           "Logger object used within the Spoon. Can be accessed to set the default log",
           "level for the messages coming from the Spoon."
         ],
-        "doc" : "Logger object used within the Spoon. Can be accessed to set the default log\nlevel for the messages coming from the Spoon.",
-        "parameters" : [
-
-        ],
+        "name" : "logger",
+        "def" : "WindowCache.logger",
         "notes" : [
 
         ],
@@ -346,19 +350,19 @@
         "returns" : [
 
         ],
-        "name" : "logger",
-        "desc" : "Logger object used within the Spoon. Can be accessed to set the default log"
+        "desc" : "Logger object used within the Spoon. Can be accessed to set the default log",
+        "parameters" : [
+
+        ]
       },
       {
-        "def" : "WindowCache.subscribedFunctions",
+        "doc" : "Table containing all subscribed instance callbacks for the window filter, used\nduring shutdown.",
         "stripped_doc" : [
           "Table containing all subscribed instance callbacks for the window filter, used",
           "during shutdown."
         ],
-        "doc" : "Table containing all subscribed instance callbacks for the window filter, used\nduring shutdown.",
-        "parameters" : [
-
-        ],
+        "name" : "subscribedFunctions",
+        "def" : "WindowCache.subscribedFunctions",
         "notes" : [
 
         ],
@@ -367,20 +371,20 @@
         "returns" : [
 
         ],
-        "name" : "subscribedFunctions",
-        "desc" : "Table containing all subscribed instance callbacks for the window filter, used"
+        "desc" : "Table containing all subscribed instance callbacks for the window filter, used",
+        "parameters" : [
+
+        ]
       },
       {
-        "def" : "WindowCache.windowFilter",
+        "doc" : "Main hs.window.filter. This is what is used to enumerate and maintain the window\ncache. It is a copy of the \"default\" window filter with WindowCache specific\nsort order and callback configurations applied in the start method.",
         "stripped_doc" : [
           "Main hs.window.filter. This is what is used to enumerate and maintain the window",
           "cache. It is a copy of the \"default\" window filter with WindowCache specific",
           "sort order and callback configurations applied in the start method."
         ],
-        "doc" : "Main hs.window.filter. This is what is used to enumerate and maintain the window\ncache. It is a copy of the \"default\" window filter with WindowCache specific\nsort order and callback configurations applied in the start method.",
-        "parameters" : [
-
-        ],
+        "name" : "windowFilter",
+        "def" : "WindowCache.windowFilter",
         "notes" : [
 
         ],
@@ -389,20 +393,19 @@
         "returns" : [
 
         ],
-        "name" : "windowFilter",
-        "desc" : "Main hs.window.filter. This is what is used to enumerate and maintain the window"
+        "desc" : "Main hs.window.filter. This is what is used to enumerate and maintain the window",
+        "parameters" : [
+
+        ]
       },
       {
-        "def" : "WindowCache:findWindowByApp(appName)",
+        "doc" : "Find the last opened window by application name.\n\nParameters:\n * appName - name of the application to find\n\nReturns:\n * The `hs.window` object if found, `nil` otherwise",
         "stripped_doc" : [
           "Find the last opened window by application name.",
           ""
         ],
-        "doc" : "Find the last opened window by application name.\n\nParameters:\n * appName - name of the application to find\n\nReturns:\n * The `hs.window` object if found, `nil` otherwise",
-        "parameters" : [
-          " * appName - name of the application to find",
-          ""
-        ],
+        "name" : "findWindowByApp",
+        "def" : "WindowCache:findWindowByApp(appName)",
         "notes" : [
 
         ],
@@ -411,20 +414,20 @@
         "returns" : [
           " * The `hs.window` object if found, `nil` otherwise"
         ],
-        "name" : "findWindowByApp",
-        "desc" : "Find the last opened window by application name."
+        "desc" : "Find the last opened window by application name.",
+        "parameters" : [
+          " * appName - name of the application to find",
+          ""
+        ]
       },
       {
-        "def" : "WindowCache:findWindowByTitle(title)",
+        "doc" : "Find a window by title.\n\nParameters:\n * title - title of the window to find\n\nReturns:\n * The `hs.window` object if found, `nil` otherwise",
         "stripped_doc" : [
           "Find a window by title.",
           ""
         ],
-        "doc" : "Find a window by title.\n\nParameters:\n * title - title of the window to find\n\nReturns:\n * The `hs.window` object if found, `nil` otherwise",
-        "parameters" : [
-          " * title - title of the window to find",
-          ""
-        ],
+        "name" : "findWindowByTitle",
+        "def" : "WindowCache:findWindowByTitle(title)",
         "notes" : [
 
         ],
@@ -433,20 +436,20 @@
         "returns" : [
           " * The `hs.window` object if found, `nil` otherwise"
         ],
-        "name" : "findWindowByTitle",
-        "desc" : "Find a window by title."
+        "desc" : "Find a window by title.",
+        "parameters" : [
+          " * title - title of the window to find",
+          ""
+        ]
       },
       {
-        "def" : "WindowCache:focusWindowByApp(appName)",
+        "doc" : "Find the last opened window by application name and focus it.\n\nParameters:\n * appName - name of the application to find\n\nReturns:\n * The `hs.window` object focused if found, `nil` otherwise",
         "stripped_doc" : [
           "Find the last opened window by application name and focus it.",
           ""
         ],
-        "doc" : "Find the last opened window by application name and focus it.\n\nParameters:\n * appName - name of the application to find\n\nReturns:\n * The `hs.window` object focused if found, `nil` otherwise",
-        "parameters" : [
-          " * appName - name of the application to find",
-          ""
-        ],
+        "name" : "focusWindowByApp",
+        "def" : "WindowCache:focusWindowByApp(appName)",
         "notes" : [
 
         ],
@@ -455,20 +458,20 @@
         "returns" : [
           " * The `hs.window` object focused if found, `nil` otherwise"
         ],
-        "name" : "focusWindowByApp",
-        "desc" : "Find the last opened window by application name and focus it."
+        "desc" : "Find the last opened window by application name and focus it.",
+        "parameters" : [
+          " * appName - name of the application to find",
+          ""
+        ]
       },
       {
-        "def" : "WindowCache:focusWindowByTitle(title)",
+        "doc" : "Find a window by title and focus it.\n\nParameters:\n * title - title of the window to focus\n\nReturns:\n * The `hs.window` object focused if found, `nil` otherwise",
         "stripped_doc" : [
           "Find a window by title and focus it.",
           ""
         ],
-        "doc" : "Find a window by title and focus it.\n\nParameters:\n * title - title of the window to focus\n\nReturns:\n * The `hs.window` object focused if found, `nil` otherwise",
-        "parameters" : [
-          " * title - title of the window to focus",
-          ""
-        ],
+        "name" : "focusWindowByTitle",
+        "def" : "WindowCache:focusWindowByTitle(title)",
         "notes" : [
 
         ],
@@ -477,71 +480,80 @@
         "returns" : [
           " * The `hs.window` object focused if found, `nil` otherwise"
         ],
-        "name" : "focusWindowByTitle",
-        "desc" : "Find a window by title and focus it."
+        "desc" : "Find a window by title and focus it.",
+        "parameters" : [
+          " * title - title of the window to focus",
+          ""
+        ]
       },
       {
-        "def" : "WindowCache:init()",
+        "doc" : "Spoon initializer method for WindowCache.\n\nParameters:\n * None\n\nReturns:\n * None",
         "stripped_doc" : [
-          "Spoon initializer method for WindowCache."
+          "Spoon initializer method for WindowCache.",
+          ""
         ],
-        "doc" : "Spoon initializer method for WindowCache.",
-        "parameters" : [
-
-        ],
+        "name" : "init",
+        "def" : "WindowCache:init()",
         "notes" : [
 
         ],
         "signature" : "WindowCache:init()",
         "type" : "Method",
         "returns" : [
-
+          " * None"
         ],
-        "name" : "init",
-        "desc" : "Spoon initializer method for WindowCache."
+        "desc" : "Spoon initializer method for WindowCache.",
+        "parameters" : [
+          " * None",
+          ""
+        ]
       },
       {
-        "def" : "WindowCache:start()",
+        "doc" : "Spoon start method for WindowCache. Configures the window filter, initializes\nthe cache with all existing windows, and then subscribes to all window related\nevents to be cached.\n\nParameters:\n * None\n\nReturns:\n * None",
         "stripped_doc" : [
           "Spoon start method for WindowCache. Configures the window filter, initializes",
           "the cache with all existing windows, and then subscribes to all window related",
-          "events to be cached."
+          "events to be cached.",
+          ""
         ],
-        "doc" : "Spoon start method for WindowCache. Configures the window filter, initializes\nthe cache with all existing windows, and then subscribes to all window related\nevents to be cached.",
-        "parameters" : [
-
-        ],
+        "name" : "start",
+        "def" : "WindowCache:start()",
         "notes" : [
 
         ],
         "signature" : "WindowCache:start()",
         "type" : "Method",
         "returns" : [
-
+          " * None"
         ],
-        "name" : "start",
-        "desc" : "Spoon start method for WindowCache. Configures the window filter, initializes"
+        "desc" : "Spoon start method for WindowCache. Configures the window filter, initializes",
+        "parameters" : [
+          " * None",
+          ""
+        ]
       },
       {
-        "def" : "WindowCache:stop()",
+        "doc" : "Spoon stop method for WindowCache. Unsubscribes the window filter from all\nsubscribed functions.\n\nParameters:\n * None\n\nReturns:\n * None",
         "stripped_doc" : [
           "Spoon stop method for WindowCache. Unsubscribes the window filter from all",
-          "subscribed functions."
+          "subscribed functions.",
+          ""
         ],
-        "doc" : "Spoon stop method for WindowCache. Unsubscribes the window filter from all\nsubscribed functions.",
-        "parameters" : [
-
-        ],
+        "name" : "stop",
+        "def" : "WindowCache:stop()",
         "notes" : [
 
         ],
         "signature" : "WindowCache:stop()",
         "type" : "Method",
         "returns" : [
-
+          " * None"
         ],
-        "name" : "stop",
-        "desc" : "Spoon stop method for WindowCache. Unsubscribes the window filter from all"
+        "desc" : "Spoon stop method for WindowCache. Unsubscribes the window filter from all",
+        "parameters" : [
+          " * None",
+          ""
+        ]
       }
     ],
     "doc" : "Utility for quickly retrieving windows\n\nDownload: https:\/\/github.com\/adammillerio\/Spoons\/raw\/main\/Spoons\/WindowCache.spoon.zip\n\nThis uses a hs.window.filter to maintain a Least Recently Used cache which\ncan be searched either by window title or application name. This is useful\nfor automations which benefit from quick access to windows.\n\nThis was implemented based entirely off of the source of\n[hs_select_window.spoon](https:\/\/github.com\/dmgerman\/hs_select_window.spoon)\nand split out to be used across other Spoons.\n\nExample Usage (Using [SpoonInstall](https:\/\/zzamboni.org\/post\/using-spoons-in-hammerspoon\/)):\nspoon.SpoonInstall:andUse(\n  \"WindowCache\",\n  {\n    start = true\n  }\n)",
