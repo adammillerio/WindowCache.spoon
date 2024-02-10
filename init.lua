@@ -171,13 +171,14 @@ end
 ---  * appName - name of the application to wait for first cached window of
 ---  * fn - function to run when first cached window is found. This function may
 ---    take a single argument, the timer itself
----  * How often to check for cached window, defaults to 1 second.
+---  * interval - How often to check for cached window, defaults to 1 second.
+---  * spaceID - optional ID of Space to access Space-specific cache for
 ---
 --- Returns:
 ---  * The started `hs.timer` instance.
-function WindowCache:waitForWindowByApp(appName, fn, interval)
+function WindowCache:waitForWindowByApp(appName, fn, interval, spaceID)
     return hs.timer.waitUntil(function()
-        return self:findWindowByApp(appName) ~= nil
+        return self:findWindowByApp(appName, spaceID) ~= nil
     end, fn, interval)
 end
 
