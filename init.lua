@@ -25,7 +25,7 @@ WindowCache.__index = WindowCache
 
 -- Metadata
 WindowCache.name = "WindowCache"
-WindowCache.version = "0.1"
+WindowCache.version = "0.0.2"
 WindowCache.author = "Adam Miller <adam@adammiller.io>"
 WindowCache.homepage = "https://github.com/adammillerio/WindowCache.spoon"
 WindowCache.license = "MIT - https://opensource.org/licenses/MIT"
@@ -127,6 +127,24 @@ function WindowCache:findWindowByApp(appName)
     end
 
     return nil
+end
+
+--- WindowCache:waitForWindowByApp(appName, fn, interval)
+--- Method
+--- Wait for cached window in appName every interval and run fn when found.
+---
+--- Parameters:
+---  * appName - name of the application to wait for first cached window of
+---  * fn - function to run when first cached window is found. This function may
+---    take a single argument, the timer itself
+---  * How often to check for cached window, defaults to 1 second.
+---
+--- Returns:
+---  * The started `hs.timer` instance.
+function WindowCache:waitForWindowByApp(appName, fn, interval)
+    return hs.timer.waitUntil(function()
+        return self:findWindowByApp(appName) ~= nil
+    end, fn, interval)
 end
 
 --- WindowCache:focusWindowByApp(appName)
