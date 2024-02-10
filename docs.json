@@ -455,12 +455,12 @@
         "notes" : [
 
         ],
-        "signature" : "WindowCache:waitForWindowByApp(appName, fn, interval)",
+        "signature" : "WindowCache:waitForWindowByApp(appName, fn[, interval, spaceID])",
         "type" : "Method",
         "returns" : [
           " * The started `hs.timer` instance."
         ],
-        "def" : "WindowCache:waitForWindowByApp(appName, fn, interval)",
+        "def" : "WindowCache:waitForWindowByApp(appName, fn[, interval, spaceID])",
         "name" : "waitForWindowByApp"
       }
     ],
@@ -580,12 +580,12 @@
         "notes" : [
 
         ],
-        "signature" : "WindowCache:waitForWindowByApp(appName, fn, interval)",
+        "signature" : "WindowCache:waitForWindowByApp(appName, fn[, interval, spaceID])",
         "type" : "Method",
         "returns" : [
           " * The started `hs.timer` instance."
         ],
-        "def" : "WindowCache:waitForWindowByApp(appName, fn, interval)",
+        "def" : "WindowCache:waitForWindowByApp(appName, fn[, interval, spaceID])",
         "name" : "waitForWindowByApp"
       },
       {

@@ -163,7 +163,7 @@ function WindowCache:findWindowByApp(appName, spaceID)
     return nil
 end
 
---- WindowCache:waitForWindowByApp(appName, fn, interval)
+--- WindowCache:waitForWindowByApp(appName, fn[, interval, spaceID])
 --- Method
 --- Wait for cached window in appName every interval and run fn when found.
 ---
