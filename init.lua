@@ -60,6 +60,12 @@ WindowCache.currentWindows = nil
 --- during shutdown.
 WindowCache.subscribedFunctions = nil
 
+--- WindowCache.windowsBySpace
+--- Variable
+--- Table containing per-Space window caches, keyed off of Mission Control Space ID,
+--- which can be used for retrieving Space-specific instances of apps and windows.
+WindowCache.windowsBySpace = nil
+
 --- WindowCache:init()
 --- Method
 --- Spoon initializer method for WindowCache.
@@ -72,19 +78,33 @@ WindowCache.subscribedFunctions = nil
 function WindowCache:init()
     self.currentWindows = {}
     self.subscribedFunctions = {}
+    self.windowsBySpace = {}
 end
 
---- WindowCache:findWindowByTitle(title)
+--- WindowCache:findWindowByTitle(title[, spaceID])
 --- Method
 --- Find a window by title.
 ---
 --- Parameters:
 ---  * title - title of the window to find
+---  * spaceID - optional ID of Space to access Space-specific cache for
 ---
 --- Returns:
 ---  * The `hs.window` object if found, `nil` otherwise
-function WindowCache:findWindowByTitle(title)
-    for i, currentWindow in ipairs(self.currentWindows) do
+function WindowCache:findWindowByTitle(title, spaceID)
+    if spaceID then
+        -- Attempt to load space specific cache.
+        currentWindows = self.windowsBySpace[spaceID]
+        if not currentWindows then
+            -- No cache for this space, return nil.
+            return nil
+        end
+    else
+        -- Use main cache.
+        currentWindows = self.currentWindows
+    end
+
+    for i, currentWindow in ipairs(currentWindows) do
         if string.find(currentWindow:title(), title) then
             return currentWindow
         end
@@ -93,34 +113,48 @@ function WindowCache:findWindowByTitle(title)
     return nil
 end
 
---- WindowCache:focusWindowByTitle(title)
+--- WindowCache:focusWindowByTitle(title[, spaceID])
 --- Method
 --- Find a window by title and focus it.
 ---
 --- Parameters:
 ---  * title - title of the window to focus
+---  * spaceID - optional ID of Space to access Space-specific cache for
 ---
 --- Returns:
 ---  * The `hs.window` object focused if found, `nil` otherwise
-function WindowCache:focusWindowByTitle(title)
-    window = self:findWindowByTitle(title)
+function WindowCache:focusWindowByTitle(title, spaceID)
+    window = self:findWindowByTitle(title, spaceID)
 
     if window then window:focus() end
 
     return window
 end
 
---- WindowCache:findWindowByApp(appName)
+--- WindowCache:findWindowByApp(appName[, spaceID])
 --- Method
 --- Find the last opened window by application name.
 ---
 --- Parameters:
 ---  * appName - name of the application to find
+---  * spaceID - optional ID of Space to access Space-specific cache for
 ---
 --- Returns:
 ---  * The `hs.window` object if found, `nil` otherwise
-function WindowCache:findWindowByApp(appName)
-    for i, currentWindow in ipairs(self.currentWindows) do
+function WindowCache:findWindowByApp(appName, spaceID)
+    if spaceID then
+        -- Attempt to load space specific cache.
+        currentWindows = self.windowsBySpace[spaceID]
+        if not currentWindows then
+            -- No cache for this space, return nil.
+            return nil
+        end
+    else
+        -- Use main cache.
+        currentWindows = self.currentWindows
+    end
+
+    for i, currentWindow in ipairs(currentWindows) do
         if string.find(currentWindow:application():name(), appName) then
             return currentWindow
         end
@@ -147,50 +181,101 @@ function WindowCache:waitForWindowByApp(appName, fn, interval)
     end, fn, interval)
 end
 
---- WindowCache:focusWindowByApp(appName)
+--- WindowCache:focusWindowByApp(appName[, spaceID])
 --- Method
 --- Find the last opened window by application name and focus it.
 ---
 --- Parameters:
 ---  * appName - name of the application to find
+---  * spaceID - optional ID of Space to access Space-specific cache for
 ---
 --- Returns:
 ---  * The `hs.window` object focused if found, `nil` otherwise
-function WindowCache:focusWindowByApp(appName)
-    window = self:findWindowByApp(appName)
+function WindowCache:focusWindowByApp(appName, spaceID)
+    window = self:findWindowByApp(appName, spaceID)
 
-    if window then window.focus() end
+    if window then window:focus() end
 
     return window
+end
+
+-- Add window to the cache, which places it at the front in in the main
+-- currentWindows cache, as well as in any Space-specific caches.
+function WindowCache:_addWindowToCache(window)
+    self.logger.vf("Adding window to main cache %s", window)
+    table.insert(self.currentWindows, 1, window)
+
+    windowSpaces = hs.spaces.windowSpaces(window)
+    if not windowSpaces then return end
+
+    self.logger.vf("Caching window in Space(s): %s", hs.inspect(windowSpaces))
+    for _, spaceID in ipairs(windowSpaces) do
+        windowsBySpace = self.windowsBySpace[spaceID]
+        if not windowsBySpace then
+            windowsBySpace = {}
+            self.windowsBySpace[spaceID] = windowsBySpace
+        end
+
+        table.insert(windowsBySpace, 1, window)
+    end
+end
+
+-- Remove window from the cache, which removes it from the main currentWindows
+-- cache, as well as any Space-specific caches.
+function WindowCache:_deleteWindowFromCache(window)
+    for i, currentWindow in ipairs(self.currentWindows) do
+        if currentWindow:id() == window:id() then
+            self.logger.vf("Deleting window from main cache: %s", window)
+            table.remove(self.currentWindows, i)
+            goto continue1
+        end
+
+        self.logger.vf("Window not present in main cache to delete: %s", window)
+
+        ::continue1::
+    end
+
+    windowSpaces = hs.spaces.windowSpaces(window)
+    if not windowSpaces then return end
+
+    self.logger.vf("Removing window from cache in Space(s): %s",
+                   hs.inspect(windowSpaces))
+    for _, spaceID in ipairs(windowSpaces) do
+        windowsBySpace = self.windowsBySpace[spaceID]
+        if not windowsBySpace then
+            self.logger.vf("No windows in cache for space: %d", spaceID)
+            goto continue2
+        end
+
+        for i, currentWindow in ipairs(windowsBySpace) do
+            if currentWindow:id() == window:id() then
+                self.logger.vf("Removing destroyed window in space %d", spaceID)
+                table.remove(windowsBySpace, i)
+            end
+        end
+
+        ::continue2::
+    end
 end
 
 -- Handler for a new window, which adds it to the cache in the first position.
 function WindowCache:_callbackWindowCreated(window, appName, event)
     self.logger.vf("Caching created window %s", window)
-    table.insert(self.currentWindows, 1, window)
+    self:_addWindowToCache(window)
 end
 
 -- Handler for a closed window, which removes it from the cache.
 function WindowCache:_callbackWindowDestroyed(window, appName, event)
-    for i, currentWindow in ipairs(self.currentWindows) do
-        if currentWindow == window then
-            self.logger.vf("Removing destroyed window: %s", window)
-            table.remove(self.currentWindows, i)
-
-            return
-        end
-    end
-
-    -- No cached window.
-    self.logger.wf("Could not find destroyed window in cache: %s", window)
+    self.logger.vf("Destroying window %s", window)
+    self:_deleteWindowFromCache(window)
 end
 
--- Handler for an existing window being focused, which removes it from the table
+-- Handler for an existing window being focused, which removes it from the cache
 -- at it's previous position and places it in front.
 function WindowCache:_callbackWindowFocused(window, appName, event)
     self.logger.vf("Window focused: %s", window)
-    self:_callbackWindowDestroyed(window, appName, "windowDestroyed")
-    self:_callbackWindowCreated(window, appName, "windowCreated")
+    self:_deleteWindowFromCache(window)
+    self:_addWindowToCache(window)
 end
 
 -- Utility function to allow for subscribing to callbacks at the instance level.
