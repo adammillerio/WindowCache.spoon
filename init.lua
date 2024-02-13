@@ -81,6 +81,13 @@ function WindowCache:init()
     self.windowsBySpace = {}
 end
 
+-- Utility method for having instance specific callbacks.
+-- Inputs are the callback fn and any arguments to be applied after the instance
+-- reference.
+function WindowCache:_instanceCallback(callback, ...)
+    return hs.fnutils.partial(callback, self, ...)
+end
+
 --- WindowCache:findWindowByTitle(title[, spaceID])
 --- Method
 --- Find a window by title.
@@ -231,8 +238,6 @@ function WindowCache:_deleteWindowFromCache(window)
             goto continue1
         end
 
-        self.logger.vf("Window not present in main cache to delete: %s", window)
-
         ::continue1::
     end
 
@@ -284,7 +289,7 @@ end
 -- inserts it in a table to be unsubscribed later. Inputs are the hs.window.filter
 -- event type, and the callback function.
 function WindowCache:_subscribe(event, callback)
-    partialFunction = hs.fnutils.partial(callback, self)
+    partialFunction = self:_instanceCallback(callback)
     self.windowFilter:subscribe(event, partialFunction)
     table.insert(self.subscribedFunctions, partialFunction)
 end
@@ -292,8 +297,7 @@ end
 -- Utility function to load all windows into the cache on initial load.
 function WindowCache:_initialize()
     for i, window in ipairs(self.windowFilter:getWindows()) do
-        self:_callbackWindowCreated(window, window:application():name(),
-                                    "windowCreated")
+        self:_addWindowToCache(window)
     end
 end
 
