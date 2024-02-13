@@ -25,7 +25,7 @@ WindowCache.__index = WindowCache
 
 -- Metadata
 WindowCache.name = "WindowCache"
-WindowCache.version = "0.0.2"
+WindowCache.version = "0.0.3"
 WindowCache.author = "Adam Miller <adam@adammiller.io>"
 WindowCache.homepage = "https://github.com/adammillerio/WindowCache.spoon"
 WindowCache.license = "MIT - https://opensource.org/licenses/MIT"
