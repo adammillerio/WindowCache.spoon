@@ -60,6 +60,8 @@ WindowCache.windowFilter = nil
 --- cache.
 WindowCache.currentWindows = nil
 
+WindowCache.windowsByID = nil
+
 --- WindowCache.subscribedFunctions
 --- Variable
 --- Table containing all subscribed instance callbacks for the window filter, used
@@ -77,6 +79,30 @@ WindowCache.windowsBySpace = nil
 --- hs.timer periodically running _checkForStaleWindows every staleWindowCheckInterval.
 WindowCache.staleWindowCheckTimer = nil
 
+--- WindowCache.native
+--- Constant
+--- Use macOS native Mission Control Space IDs for managing windows by space. Default.
+
+--- WindowCache.virtual
+--- Constant
+--- TODO: Document
+--- The actual implementation of "virtual spaces" (CRUD operations), hotkeys, menubar,
+--- etc, should be implemented in a separate spoon Spaceman. Changing this setting
+--- should only stub out the space related bits of this one to that Spoon in virtual
+--- mode.
+
+local spaceModes = {native = "native", virtual = "virtual"}
+
+for k in pairs(spaceModes) do WindowCache[k] = k end -- expose actions
+
+--- WindowCache.spaceMode
+--- Variable
+--- Space management mode, defaults to WindowCache.native.
+WindowCache.spaceMode = WindowCache.native
+
+--- Space "Engine"
+WindowCache.spaces = nil
+
 --- WindowCache:init()
 --- Method
 --- Spoon initializer method for WindowCache.
@@ -90,6 +116,7 @@ function WindowCache:init()
     self.currentWindows = {}
     self.subscribedFunctions = {}
     self.windowsBySpace = {}
+    self.windowsByID = {}
 end
 
 -- Utility method for having instance specific callbacks.
@@ -98,6 +125,8 @@ end
 function WindowCache:_instanceCallback(callback, ...)
     return hs.fnutils.partial(callback, self, ...)
 end
+
+function WindowCache:getWindowByID(windowID) return self.windowsByID[windowID] end
 
 --- WindowCache:findWindowByTitle(title[, spaceID])
 --- Method
@@ -144,7 +173,7 @@ end
 --- Returns:
 ---  * The `hs.window` object focused if found, `nil` otherwise
 function WindowCache:focusWindowByTitle(title, spaceID)
-    window = self:findWindowByTitle(title, spaceID)
+    local window = self:findWindowByTitle(title, spaceID)
 
     if window then window:focus() end
 
@@ -226,7 +255,7 @@ end
 --- Returns:
 ---  * The `hs.window` object focused if found, `nil` otherwise
 function WindowCache:focusWindowByApp(appName, spaceID)
-    window = self:findWindowByApp(appName, spaceID)
+    local window = self:findWindowByApp(appName, spaceID)
 
     if window then window:focus() end
 
@@ -276,16 +305,16 @@ end
 
 -- Add window to the cache, which places it at the front in in the main
 -- currentWindows cache, as well as in any Space-specific caches.
-function WindowCache:_addWindowToCache(window)
+function WindowCache:_addWindowToCache(window, created)
     self.logger.vf("Adding window to main cache %s", window)
     table.insert(self.currentWindows, 1, window)
 
-    windowSpaces = hs.spaces.windowSpaces(window)
+    local windowSpaces = self.spaces.windowSpaces(window)
     if not windowSpaces then return end
 
     self.logger.vf("Caching window in Space(s): %s", hs.inspect(windowSpaces))
     for _, spaceID in ipairs(windowSpaces) do
-        windowsBySpace = self.windowsBySpace[spaceID]
+        local windowsBySpace = self.windowsBySpace[spaceID]
         if not windowsBySpace then
             windowsBySpace = {}
             self.windowsBySpace[spaceID] = windowsBySpace
@@ -308,21 +337,21 @@ function WindowCache:_deleteWindowFromCache(window)
         ::continue1::
     end
 
-    windowSpaces = hs.spaces.windowSpaces(window)
+    local windowSpaces = self.spaces.windowSpaces(window)
     if not windowSpaces then return end
 
     self.logger.vf("Removing window from cache in Space(s): %s",
                    hs.inspect(windowSpaces))
     for _, spaceID in ipairs(windowSpaces) do
-        windowsBySpace = self.windowsBySpace[spaceID]
+        local windowsBySpace = self.windowsBySpace[spaceID]
         if not windowsBySpace then
-            self.logger.vf("No windows in cache for space: %d", spaceID)
+            self.logger.vf("No windows in cache for space: %s", spaceID)
             goto continue2
         end
 
         for i, currentWindow in ipairs(windowsBySpace) do
             if currentWindow:id() == window:id() then
-                self.logger.vf("Removing destroyed window in space %d", spaceID)
+                self.logger.vf("Removing destroyed window in space %s", spaceID)
                 table.remove(windowsBySpace, i)
             end
         end
@@ -348,7 +377,7 @@ function WindowCache:_checkForStaleWindows()
         -- If this window isn't in the "set", delete it.
         if not allWindowSet[window:id()] then
             self.logger.wf("Removing stale window: %s", hs.inspect(window))
-            self:_deleteWindowFromCache(window)
+            self:_deleteWindowFromCache(window, true)
         end
     end
 end
@@ -356,12 +385,33 @@ end
 -- Handler for a new window, which adds it to the cache in the first position.
 function WindowCache:_callbackWindowCreated(window, appName, event)
     self.logger.vf("Caching created window %s", window)
+    self.windowsByID[window:id()] = window
+
+    if self.spaceMode == "virtual" then
+        local windowSpaces = self.spaces.windowSpaces(window)
+        if not windowSpaces then
+            -- New/unassigned window, add to current virtual space.
+            self.spaces:addWindowToVirtualSpace(window)
+        end
+    end
+
     self:_addWindowToCache(window)
 end
 
 -- Handler for a closed window, which removes it from the cache.
 function WindowCache:_callbackWindowDestroyed(window, appName, event)
     self.logger.vf("Destroying window %s", window)
+    self.windowsByID[window:id()] = nil
+
+    if self.spaceMode == "virtual" then
+        local windowSpaces = self.spaces.windowSpaces(window)
+        if windowSpaces then
+            for _, spaceID in pairs(windowSpaces) do
+                self.spaces:removeWindowFromVirtualSpace(window, spaceID, true)
+            end
+        end
+    end
+
     self:_deleteWindowFromCache(window)
 end
 
@@ -378,7 +428,7 @@ end
 -- inserts it in a table to be unsubscribed later. Inputs are the hs.window.filter
 -- event type, and the callback function.
 function WindowCache:_subscribe(event, callback)
-    partialFunction = self:_instanceCallback(callback)
+    local partialFunction = self:_instanceCallback(callback)
     self.windowFilter:subscribe(event, partialFunction)
     table.insert(self.subscribedFunctions, partialFunction)
 end
@@ -386,7 +436,7 @@ end
 -- Utility function to load all windows into the cache on initial load.
 function WindowCache:_initialize()
     for i, window in ipairs(self.windowFilter:getWindows()) do
-        self:_addWindowToCache(window)
+        self:_callbackWindowCreated(window)
     end
 end
 
@@ -411,6 +461,16 @@ function WindowCache:start()
     if self.logLevel ~= nil then self.logger.setLogLevel(self.logLevel) end
 
     self.logger.v("Starting WindowCache")
+
+    if self.spaceMode == "virtual" then
+        self.logger.v("Using SpaceMan for virtual Space management")
+        self.spaces = spoon.SpaceMan
+    elseif self.spaceMode == "native" then
+        self.logger.v("Using native Mission Control Space management")
+        self.spaces = require("hs.spaces")
+    else
+        self.logger.ef("Unknown space mode: %s", self.spaceMode)
+    end
 
     self.logger.v("Starting window filter")
     self.windowFilter = hs.window.filter.new(false)
